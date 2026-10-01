@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html lang="ru" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Saul Parts — Оригинальные корейские автозапчасти</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              emerald: '#10b981',
+              neon: '#00e676',
+              darkBg: '#080b0e',
+              cardBg: '#11171d',
+              borderBg: '#1e293b'
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #070a0d;
+      color: #f1f5f9;
+      font-family: 'Inter', sans-serif;
+    }
+    .glass-card {
+      background: rgba(17, 23, 29, 0.85);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+    }
+    .glass-modal {
+      background: rgba(13, 18, 24, 0.95);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #070a0d;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1e293b;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #10b981;
+    }
+    [contenteditable="true"]:focus {
+      outline: 2px solid #10b981;
+      border-radius: 4px;
+      padding: 2px 4px;
+      background: rgba(16, 185, 129, 0.2);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-emerald-500 selection:text-slate-950">
+
+  <!-- Admin Controls Top Banner -->
+  <div id="adminBanner" class="hidden bg-slate-900 border-b border-emerald-500/40 text-emerald-300 px-4 py-2.5 text-sm sticky top-0 z-50 shadow-2xl backdrop-blur-md">
+    <div class="max-w-7xl mx-auto flex flex-wrap justify-between items-center gap-3">
+      <div class="flex items-center gap-2">
+        <span class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+        <span class="font-bold text-white text-xs sm:text-sm">Режим админа активен</span>
+        <span class="text-xs text-emerald-400/80 hidden md:inline">(Вы можете редактировать картинки, цены и тексты)</span>
+      </div>
+      <div class="flex items-center gap-2 flex-wrap">
+        <button onclick="openProductEditModal(null)" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5">
+          <i class="fa-solid fa-plus"></i> Добавить запчасть
+        </button>
+        <button onclick="toggleEditability()" id="editTextBtn" class="bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-emerald-500/40 px-3 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5">
+          <i class="fa-solid fa-i-cursor"></i> <span>Правка текстов</span>
+        </button>
+        <button onclick="resetToDefaults()" class="bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 px-2.5 py-1.5 rounded-lg text-xs font-medium transition" title="Сбросить все персональные настройки">
+          <i class="fa-solid fa-rotate-left"></i>
+        </button>
+        <button onclick="logoutAdmin()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-lg text-xs font-medium transition">
+          <i class="fa-solid fa-right-from-bracket mr-1"></i>Выйти
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Header Navbar -->
+  <header class="border-b border-slate-800/80 bg-slate-950/90 backdrop-blur-md sticky top-0 z-40">
+    <!-- Top Contact Bar -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 flex flex-wrap justify-between items-center text-xs text-slate-400 gap-2 border-b border-slate-900">
+      <div class="flex items-center gap-4 flex-wrap">
+        <span class="flex items-center gap-1.5 text-slate-300">
+          <i class="fa-solid fa-location-dot text-emerald-500"></i>
+          <span class="editable-content" data-key="header_address">г. Бишкек / Алматы, ул. Автомобильная 45</span>
+        </span>
+        <a href="https://wa.me/996555554447" target="_blank" onclick="handleLinkClick(event)" class="flex items-center gap-1.5 text-emerald-400 hover:text-emerald-300 transition">
+          <i class="fa-brands fa-whatsapp text-sm"></i>
+          <span class="editable-content" data-key="header_wa">WhatsApp Консультация</span>
+        </a>
+      </div>
+
+      <div class="flex items-center gap-4">
+        <a href="tel:+996555554447" onclick="handleLinkClick(event)" class="font-semibold text-slate-200 hover:text-emerald-400 transition flex items-center gap-1.5">
+          <i class="fa-solid fa-phone text-emerald-500"></i>
+          <span class="editable-content" data-key="header_phone">0555554447</span>
+        </a>
+        
+        <button id="adminLoginTrigger" onclick="openAdminModal()" class="bg-slate-900 hover:bg-emerald-500/20 border border-slate-700 hover:border-emerald-500/50 text-emerald-400 px-3 py-1 rounded-lg transition text-xs font-medium flex items-center gap-1.5">
+          <i class="fa-solid fa-lock text-emerald-500"></i>
+          <span>Вход для админа</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Main Nav -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between gap-4">
+      <!-- Brand Logo -->
+      <a href="#" onclick="handleLinkClick(event)" class="flex items-center gap-3 group">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center text-slate-950 font-black text-xl shadow-lg shadow-emerald-500/20 group-hover:scale-105 transition">
+          S
+        </div>
+        <div>
+          <div class="text-xl font-black tracking-tight text-white flex items-center gap-1">
+            <span class="editable-content" data-key="brand_title">Saul Parts</span>
+          </div>
+          <p class="text-[10px] font-bold text-emerald-400 tracking-wider uppercase">KOREAN AUTO PARTS</p>
+        </div>
+      </a>
+
+      <!-- Search Bar Desktop -->
+      <div class="flex-1 max-w-lg hidden md:block">
+        <div class="relative">
+          <input type="text" class="search-input-field w-full bg-slate-900 border border-slate-800 rounded-xl py-2.5 pl-10 pr-4 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition" onkeyup="handleSearch(this)" placeholder="Поиск запчасти или OEM кода...">
+          <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-slate-500"></i>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="flex items-center gap-3">
+        <button onclick="toggleCartModal()" class="relative bg-emerald-500/10 border border-emerald-500/30 hover:bg-emerald-500/20 text-emerald-400 p-2.5 rounded-xl transition flex items-center gap-2 px-3.5">
+          <i class="fa-solid fa-cart-shopping text-base"></i>
+          <span class="text-xs font-bold hidden sm:inline">Корзина</span>
+          <span id="cartBadge" class="bg-emerald-500 text-slate-950 text-xs font-black w-5 h-5 rounded-full flex items-center justify-center">0</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Search -->
+    <div class="px-4 pb-3 md:hidden">
+      <div class="relative">
+        <input type="text" class="search-input-field w-full bg-slate-900 border border-slate-800 rounded-xl py-2 pl-9 pr-4 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-emerald-500" onkeyup="handleSearch(this)" placeholder="Поиск запчасти или OEM...">
+        <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-500 text-xs"></i>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="relative py-12 lg:py-16 overflow-hidden border-b border-slate-800/80 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div class="grid md:grid-cols-2 gap-8 items-center">
+        <div>
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-medium mb-4">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span class="editable-content" data-key="hero_badge">Прямой импорт из Кореи: MOBIS, CTR, Sangsin</span>
+          </div>
+          <h1 class="text-3xl sm:text-4xl lg:text-5xl font-black text-white leading-tight mb-4">
+            <span class="editable-content" data-key="hero_title">Запчасти из Кореи</span> <br>
+            <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-200 editable-content" data-key="hero_subtitle">с гарантией точности</span>
+          </h1>
+          <p class="text-slate-400 text-sm sm:text-base mb-6 leading-relaxed editable-content" data-key="hero_description">
+            Оригинальные детали и проверенные дубликаты для Hyundai, Kia, Genesis, Daewoo и SsangYong. Доставка по региону в день заказа.
+          </p>
+          <div class="flex flex-wrap gap-3">
+            <a href="#vinSection" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold px-6 py-3 rounded-xl transition shadow-lg shadow-emerald-500/20 flex items-center gap-2 text-sm">
+              <i class="fa-solid fa-car"></i>
+              Подобрать по VIN
+            </a>
+            <a href="#catalog" class="bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold px-6 py-3 rounded-xl transition border border-slate-700 text-sm">
+              Перейти в каталог
+            </a>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3 sm:gap-4">
+          <div class="glass-card p-4 rounded-2xl border border-slate-800">
+            <i class="fa-solid fa-truck-fast text-emerald-400 text-2xl mb-2"></i>
+            <h3 class="font-bold text-slate-200 text-sm editable-content" data-key="feat_1_title">Быстрая доставка</h3>
+            <p class="text-xs text-slate-400 mt-1 editable-content" data-key="feat_1_desc">Отправка в день оформления заказа</p>
+          </div>
+          <div class="glass-card p-4 rounded-2xl border border-slate-800">
+            <i class="fa-solid fa-certificate text-emerald-400 text-2xl mb-2"></i>
+            <h3 class="font-bold text-slate-200 text-sm editable-content" data-key="feat_2_title">100% Оригиналы</h3>
+            <p class="text-xs text-slate-400 mt-1 editable-content" data-key="feat_2_desc">Прямые поставки со складов Кореи</p>
+          </div>
+          <div class="glass-card p-4 rounded-2xl border border-slate-800">
+            <i class="fa-solid fa-tags text-emerald-400 text-2xl mb-2"></i>
+            <h3 class="font-bold text-slate-200 text-sm editable-content" data-key="feat_3_title">Выгодные цены</h3>
+            <p class="text-xs text-slate-400 mt-1 editable-content" data-key="feat_3_desc">Без переплат лишним посредникам</p>
+          </div>
+          <div class="glass-card p-4 rounded-2xl border border-slate-800">
+            <i class="fa-solid fa-headset text-emerald-400 text-2xl mb-2"></i>
+            <h3 class="font-bold text-slate-200 text-sm editable-content" data-key="feat_4_title">Консультация</h3>
+            <p class="text-xs text-slate-400 mt-1 editable-content" data-key="feat_4_desc">Точный подбор запчастей по каталогам</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Brand Filters -->
+  <section class="py-6 bg-slate-950 border-b border-slate-800/80">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Марка автомобиля:</p>
+      <div class="flex items-center gap-2.5 overflow-x-auto pb-2 scrollbar-none" id="brandFilters">
+        <button onclick="filterByBrand(event, 'all')" class="brand-btn active-brand bg-emerald-500 text-slate-950 px-4 py-2 rounded-xl font-bold text-xs whitespace-nowrap transition">
+          Все марки
+        </button>
+        <button onclick="filterByBrand(event, 'Hyundai')" class="brand-btn bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 px-4 py-2 rounded-xl font-medium text-xs whitespace-nowrap transition">
+          Hyundai
+        </button>
+        <button onclick="filterByBrand(event, 'Kia')" class="brand-btn bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 px-4 py-2 rounded-xl font-medium text-xs whitespace-nowrap transition">
+          Kia
+        </button>
+        <button onclick="filterByBrand(event, 'Genesis')" class="brand-btn bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 px-4 py-2 rounded-xl font-medium text-xs whitespace-nowrap transition">
+          Genesis
+        </button>
+        <button onclick="filterByBrand(event, 'SsangYong')" class="brand-btn bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 px-4 py-2 rounded-xl font-medium text-xs whitespace-nowrap transition">
+          SsangYong / KGM
+        </button>
+        <button onclick="filterByBrand(event, 'Daewoo')" class="brand-btn bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 px-4 py-2 rounded-xl font-medium text-xs whitespace-nowrap transition">
+          Daewoo / Chevrolet
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Catalog Section -->
+  <main id="catalog" class="py-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex-1 w-full">
+    <div class="flex flex-wrap justify-between items-center gap-4 mb-8">
+      <div>
+        <h2 class="text-2xl font-black text-white">Каталог автозапчастей</h2>
+        <p class="text-xs text-slate-400 mt-1">Оригинальные комплектующие и аналоги в наличии</p>
+      </div>
+
+      <!-- Categories -->
+      <div class="flex items-center gap-2 flex-wrap text-xs">
+        <button onclick="filterByCategory(event, 'all')" class="cat-btn active-cat bg-slate-800 text-emerald-400 px-3 py-1.5 rounded-lg border border-emerald-500/40 font-medium">Все категории</button>
+        <button onclick="filterByCategory(event, 'Тормозная система')" class="cat-btn bg-slate-900 hover:bg-slate-800 text-slate-400 px-3 py-1.5 rounded-lg border border-slate-800">Тормозная система</button>
+        <button onclick="filterByCategory(event, 'Двигатель')" class="cat-btn bg-slate-900 hover:bg-slate-800 text-slate-400 px-3 py-1.5 rounded-lg border border-slate-800">Двигатель & ТО</button>
+        <button onclick="filterByCategory(event, 'Подвеска')" class="cat-btn bg-slate-900 hover:bg-slate-800 text-slate-400 px-3 py-1.5 rounded-lg border border-slate-800">Подвеска & Рулевое</button>
+      </div>
+    </div>
+
+    <!-- Product Grid -->
+    <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      <!-- Dynamic Products -->
+    </div>
+  </main>
+
+  <!-- VIN Request Form -->
+  <section id="vinSection" class="py-12 bg-slate-950 border-t border-slate-800/80">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <div class="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 mb-3">
+        <i class="fa-solid fa-barcode text-xl"></i>
+      </div>
+      <h2 class="text-2xl font-black text-white mb-2">Подбор запчастей по VIN-коду</h2>
+      <p class="text-slate-400 text-sm mb-6 max-w-xl mx-auto">
+        Отправьте VIN номер вашего автомобиля — менеджер бесплатно проверит совместимость и подготовит точный список запчастей.
+      </p>
+
+      <form onsubmit="handleVinSubmit(event)" class="glass-card p-6 rounded-2xl text-left border border-slate-800">
+        <div class="grid sm:grid-cols-2 gap-4 mb-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">VIN-код / Номер кузова</label>
+            <input type="text" required placeholder="KMHDH41BB1U000000" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-slate-200 uppercase focus:border-emerald-500 focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Марка и модель авто</label>
+            <input type="text" required placeholder="Hyundai Santa Fe 2.2D 2021" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-slate-200 focus:border-emerald-500 focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Ваше имя</label>
+            <input type="text" required placeholder="Иван" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-slate-200 focus:border-emerald-500 focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Телефон / WhatsApp</label>
+            <input type="tel" required placeholder="0555554447" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-slate-200 focus:border-emerald-500 focus:outline-none">
+          </div>
+        </div>
+        <div class="mb-4">
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Необходимые запчасти</label>
+          <textarea rows="2" placeholder="Например: Тормозные диски, масляный фильтр, свечи..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-slate-200 focus:border-emerald-500 focus:outline-none"></textarea>
+        </div>
+        <button type="submit" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold py-3 rounded-xl transition flex items-center justify-center gap-2">
+          <i class="fa-brands fa-whatsapp text-lg"></i>
+          Отправить запрос в WhatsApp
+        </button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-slate-950 border-t border-slate-900 py-8 text-xs text-slate-500">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-wrap justify-between items-center gap-4">
+      <div>
+        <div class="text-slate-300 font-bold mb-1">Saul Parts © 2026</div>
+        <p>Интернет-магазин оригинальных корейских автозапчастей.</p>
+      </div>
+      <div class="flex gap-6">
+        <a href="#catalog" class="hover:text-emerald-400 transition">Каталог</a>
+        <a href="#vinSection" class="hover:text-emerald-400 transition">Подбор по VIN</a>
+        <a href="https://wa.me/996555554447" class="hover:text-emerald-400 transition">WhatsApp: 0555554447</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Admin Authentication Modal -->
+  <div id="adminModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md hidden opacity-0 transition-opacity duration-200">
+    <div class="glass-modal rounded-2xl w-full max-w-md p-6 shadow-2xl relative border border-emerald-500/30">
+      <button onclick="closeAdminModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white transition">
+        <i class="fa-solid fa-xmark text-lg"></i>
+      </button>
+
+      <div class="text-center mb-6">
+        <div class="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 flex items-center justify-center mx-auto mb-3">
+          <i class="fa-solid fa-user-shield text-xl"></i>
+        </div>
+        <h3 class="text-xl font-black text-white">Режим администратора</h3>
+        <p class="text-xs text-slate-400 mt-1">Введите пароль для редактирования товаров и сайта</p>
+      </div>
+
+      <form onsubmit="handleAdminAuth(event)">
+        <div class="mb-5">
+          <label class="block text-xs font-semibold text-slate-300 mb-2">Пароль доступа</label>
+          <div class="relative">
+            <input type="password" id="adminPasswordInput" placeholder="Введите пароль..." required autofocus class="w-full bg-slate-900 border border-slate-700 focus:border-emerald-500 rounded-xl py-3 pl-10 pr-4 text-sm text-white placeholder-slate-500 outline-none transition">
+            <i class="fa-solid fa-key absolute left-3.5 top-3.5 text-slate-500"></i>
+          </div>
+          <p id="authErrorMsg" class="text-red-400 text-xs mt-2 hidden flex items-center gap-1">
+            <i class="fa-solid fa-circle-exclamation"></i>
+            <span>Неверный пароль. Попробуйте еще раз.</span>
+          </p>
+        </div>
+
+        <div class="flex gap-3">
+          <button type="button" onclick="closeAdminModal()" class="w-1/2 bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold py-2.5 rounded-xl transition text-sm">
+            Отмена
+          </button>
+          <button type="submit" class="w-1/2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold py-2.5 rounded-xl transition text-sm shadow-lg shadow-emerald-500/20">
+            Войти
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Product Edit/Add Modal (Admin) -->
+  <div id="productEditModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md hidden opacity-0 transition-opacity duration-200">
+    <div class="glass-modal rounded-2xl w-full max-w-lg p-6 shadow-2xl relative border border-emerald-500/30 max-h-[90vh] overflow-y-auto">
+      <button onclick="closeProductEditModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white transition">
+        <i class="fa-solid fa-xmark text-lg"></i>
+      </button>
+
+      <h3 id="modalProductTitle" class="text-lg font-black text-white mb-4 flex items-center gap-2">
+        <i class="fa-solid fa-pen-to-square text-emerald-400"></i>
+        <span>Редактировать запчасть</span>
+      </h3>
+
+      <form onsubmit="saveProductChanges(event)" class="space-y-4">
+        <input type="hidden" id="editProductId">
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Ссылка на изображение (URL)</label>
+          <input type="text" id="editProductImage" required placeholder="https://images.unsplash.com/..." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white focus:border-emerald-500 focus:outline-none">
+          <p class="text-[10px] text-slate-500 mt-1">Вставьте прямую ссылку на фото (Unsplash, Imgur или любую картинку).</p>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Наименование детали</label>
+            <input type="text" id="editProductName" required placeholder="Масляный фильтр..." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white focus:border-emerald-500 focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">OEM Артикул</label>
+            <input type="text" id="editProductOem" required placeholder="26300-35505" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white focus:border-emerald-500 focus:outline-none">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-3 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Цена (сом)</label>
+            <input type="number" id="editProductPrice" required min="0" placeholder="1500" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white focus:border-emerald-500 focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Марка авто</label>
+            <select id="editProductBrand" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-2.5 py-2 text-xs text-white focus:border-emerald-500 focus:outline-none">
+              <option value="Hyundai">Hyundai</option>
+              <option value="Kia">Kia</option>
+              <option value="Genesis">Genesis</option>
+              <option value="SsangYong">SsangYong</option>
+              <option value="Daewoo">Daewoo</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Категория</label>
+            <select id="editProductCategory" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-2.5 py-2 text-xs text-white focus:border-emerald-500 focus:outline-none">
+              <option value="Двигатель">Двигатель</option>
+              <option value="Тормозная система">Тормозная система</option>
+              <option value="Подвеска">Подвеска</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Описание запчасти</label>
+          <textarea id="editProductDesc" rows="2" placeholder="Краткое описание совместимости..." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white focus:border-emerald-500 focus:outline-none"></textarea>
+        </div>
+
+        <div class="flex gap-3 pt-2">
+          <button type="button" onclick="closeProductEditModal()" class="w-1/2 bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold py-2 rounded-xl transition text-xs">
+            Отмена
+          </button>
+          <button type="submit" class="w-1/2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold py-2 rounded-xl transition text-xs shadow-lg shadow-emerald-500/20">
+            Сохранить запчасть
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Shopping Cart Drawer -->
+  <div id="cartModal" class="fixed inset-0 z-50 flex justify-end bg-slate-950/80 backdrop-blur-sm hidden opacity-0 transition-opacity duration-200">
+    <div class="w-full max-w-md bg-slate-900 h-full border-l border-slate-800 p-6 flex flex-col justify-between overflow-y-auto">
+      <div>
+        <div class="flex justify-between items-center mb-6 pb-4 border-b border-slate-800">
+          <h3 class="text-lg font-bold text-white flex items-center gap-2">
+            <i class="fa-solid fa-cart-shopping text-emerald-400"></i>
+            <span>Корзина покупок</span>
+          </h3>
+          <button onclick="toggleCartModal()" class="text-slate-400 hover:text-white">
+            <i class="fa-solid fa-xmark text-xl"></i>
+          </button>
+        </div>
+
+        <div id="cartItemsList" class="space-y-3">
+          <!-- Cart items render here -->
+        </div>
+      </div>
+
+      <div class="pt-6 border-t border-slate-800">
+        <div class="flex justify-between text-sm mb-4">
+          <span class="text-slate-400">Итого:</span>
+          <span id="cartTotalSum" class="text-xl font-black text-emerald-400">0 som</span>
+        </div>
+        <button onclick="checkoutCart()" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold py-3 rounded-xl transition flex items-center justify-center gap-2">
+          <i class="fa-brands fa-whatsapp text-lg"></i>
+          <span>Оформить заказ в WhatsApp</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notification Toast -->
+  <div id="toast" class="fixed bottom-5 right-5 z-50 bg-slate-800 text-slate-100 border border-emerald-500/40 px-4 py-3 rounded-xl shadow-xl flex items-center gap-3 transition-all transform translate-y-20 opacity-0 pointer-events-none">
+    <i class="fa-solid fa-circle-check text-emerald-400 text-lg"></i>
+    <span id="toastMsg" class="text-sm font-medium">Действие выполнено</span>
+  </div>
+
+  <script>
+    const ADMIN_PASSWORD = "2011";
+    let isAdmin = false;
+    let isEditingEnabled = false;
+    let currentBrandFilter = 'all';
+    let currentCategoryFilter = 'all';
+    let searchQuery = '';
+    let cart = [];
+
+    // Default Catalog Data
+    const defaultProducts = [
+      {
+        id: 1,
+        brand: 'Hyundai',
+        category: 'Двигатель',
+        name: 'Масляный фильтр Hyundai / Kia MOBIS',
+        oem: '26300-35505',
+        price: 650,
+        desc: 'Оригинальный масляный фильтр для двигателей 1.4, 1.6, 2.0 (Solaris, Creta, Elantra, Rio).',
+        image: 'https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?auto=format&fit=crop&w=600&q=80'
+      },
+      {
+        id: 2,
+        brand: 'Kia',
+        category: 'Тормозная система',
+        name: 'Передние тормозные колодки Sangsin Hi-Q',
+        oem: 'SP1399 / 58101-H5A00',
+        price: 2400,
+        desc: 'Премиальные тормозные колодки высокой износостойкости для Kia Rio 4 / Solaris 2.',
+        image: 'https://images.unsplash.com/photo-1600706432520-2c1f78b4e1c6?auto=format&fit=crop&w=600&q=80'
+      },
+      {
+        id: 3,
+        brand: 'Genesis',
+        category: 'Подвеска',
+        name: 'Передний амортизатор Mando Genesis G80',
+        oem: '54651-B1000',
+        price: 18500,
+        desc: 'Оригинальный передний амортизатор в сборе для подвески Genesis G80 / DH.',
+        image: 'https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?auto=format&fit=crop&w=600&q=80'
+      },
+      {
+        id: 4,
+        brand: 'SsangYong',
+        category: 'Двигатель',
+        name: 'Топливный фильтр SsangYong Korando / Actyon',
+        oem: '2247034000',
+        price: 3200,
+        desc: 'Оригинальный элемент топливного фильтра для дизельных моторов D20DTF.',
+        image: 'https://images.unsplash.com/photo-1580273916550-e323be2ae537?auto=format&fit=crop&w=600&q=80'
+      },
+      {
+        id: 5,
+        brand: 'Daewoo',
+        category: 'Подвеска',
+        name: 'Шаровая опора CTR Daewoo Nexia / Gentra',
+        oem: 'CBKD-1',
+        price: 1100,
+        desc: 'Усиленная шаровая опора от ведущего корейского производителя CTR.',
+        image: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=600&q=80'
+      },
+      {
+        id: 6,
+        brand: 'Hyundai',
+        category: 'Тормозная система',
+        name: 'Тормозной диск передний MOBIS Original',
+        oem: '51712-C1000',
+        price: 5800,
+        desc: 'Передний вентилируемый диск для Hyundai Sonata / Tucson, Kia Optima.',
+        image: 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=600&q=80'
+      }
+    ];
+
+    let products = [];
+
+    window.onload = function() {
+      loadProductsData();
+      checkAdminSession();
+      loadSavedTexts();
+      renderCatalog();
+    };
+
+    function loadProductsData() {
+      try {
+        const saved = localStorage.getItem('saul_products_db');
+        if (saved) {
+          products = JSON.parse(saved);
+        } else {
+          products = [...defaultProducts];
+        }
+      } catch(e) {
+        products = [...defaultProducts];
+      }
+    }
+
+    function saveProductsData() {
+      try {
+        localStorage.setItem('saul_products_db', JSON.stringify(products));
+      } catch (err) {
+        console.error("Storage error:", err);
+      }
+    }
+
+    function renderCatalog() {
+      const grid = document.getElementById('productGrid');
+      if (!grid) return;
+
+      const searchVal = searchQuery.toLowerCase().trim();
+
+      const filtered = products.filter(p => {
+        const matchesBrand = (currentBrandFilter === 'all' || p.brand.toLowerCase() === currentBrandFilter.toLowerCase());
+        const matchesCategory = (currentCategoryFilter === 'all' || p.category === currentCategoryFilter);
+        const matchesSearch = !searchVal || p.name.toLowerCase().includes(searchVal) || p.oem.toLowerCase().includes(searchVal);
+        return matchesBrand && matchesCategory && matchesSearch;
+      });
+
+      if (filtered.length === 0) {
+        grid.innerHTML = `
+          <div class="col-span-full py-12 text-center text-slate-500">
+            <i class="fa-solid fa-box-open text-4xl mb-3 opacity-40"></i>
+            <p>Запчасти не найдены по вашему запросу</p>
+            ${isAdmin ? `<button onclick="openProductEditModal(null)" class="mt-3 bg-emerald-500 text-slate-950 font-bold px-4 py-2 rounded-xl text-xs">+ Добавить деталь</button>` : ''}
+          </div>
+        `;
+        return;
+      }
+
+      grid.innerHTML = filtered.map(item => `
+        <div class="glass-card rounded-2xl overflow-hidden border border-slate-800 hover:border-emerald-500/40 transition group flex flex-col justify-between relative">
+          
+          ${isAdmin ? `
+            <div class="absolute top-2.5 right-2.5 z-20 flex gap-1.5 bg-slate-950/90 p-1.5 rounded-xl backdrop-blur-md border border-emerald-500/30">
+              <button onclick="openProductEditModal('${item.id}')" class="bg-amber-500/20 hover:bg-amber-500/40 text-amber-300 p-1.5 rounded-lg text-xs transition" title="Изменить запчасть / картинку">
+                <i class="fa-solid fa-pen"></i>
+              </button>
+              <button onclick="deleteProduct('${item.id}')" class="bg-red-500/20 hover:bg-red-500/40 text-red-300 p-1.5 rounded-lg text-xs transition" title="Удалить деталь">
+                <i class="fa-solid fa-trash"></i>
+              </button>
+            </div>
+          ` : ''}
+
+          <div>
+            <div class="relative h-44 bg-slate-900 overflow-hidden">
+              <img src="${item.image}" alt="${item.name}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" onerror="this.src='https://placehold.co/400x300/11171d/10b981?text=Saul+Parts'">
+              <span class="absolute top-3 left-3 bg-slate-950/80 border border-slate-700 text-emerald-400 font-semibold text-[10px] px-2.5 py-1 rounded-md backdrop-blur-md">
+                ${item.brand}
+              </span>
+              <span class="absolute bottom-2.5 right-2.5 bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-[10px] font-bold px-2 py-0.5 rounded backdrop-blur-md">
+                OEM: ${item.oem}
+              </span>
+            </div>
+
+            <div class="p-4">
+              <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">${item.category}</span>
+              <h3 class="font-bold text-slate-100 text-sm mt-1 leading-snug line-clamp-2">${item.name}</h3>
+              <p class="text-xs text-slate-400 mt-2 line-clamp-2">${item.desc}</p>
+            </div>
+          </div>
+
+          <div class="p-4 pt-0 flex items-center justify-between mt-3 border-t border-slate-800/60">
+            <div>
+              <span class="text-xs text-slate-500 block">Цена:</span>
+              <span class="text-lg font-black text-emerald-400">${item.price} <span class="text-xs font-normal">сом</span></span>
+            </div>
+            <button onclick="addToCart('${item.id}')" class="bg-emerald-500/10 hover:bg-emerald-500 border border-emerald-500/30 hover:border-emerald-500 text-emerald-400 hover:text-slate-950 px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5">
+              <i class="fa-solid fa-cart-plus"></i> В корзину
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function filterByBrand(e, brand) {
+      currentBrandFilter = brand;
+      document.querySelectorAll('.brand-btn').forEach(btn => {
+        btn.classList.remove('bg-emerald-500', 'text-slate-950', 'active-brand');
+        btn.classList.add('bg-slate-900', 'text-slate-300');
+      });
+      if (e && e.currentTarget) {
+        e.currentTarget.classList.remove('bg-slate-900', 'text-slate-300');
+        e.currentTarget.classList.add('bg-emerald-500', 'text-slate-950', 'active-brand');
+      }
+      renderCatalog();
+    }
+
+    function filterByCategory(e, cat) {
+      currentCategoryFilter = cat;
+      document.querySelectorAll('.cat-btn').forEach(btn => {
+        btn.classList.remove('bg-slate-800', 'text-emerald-400', 'border-emerald-500/40');
+        btn.classList.add('bg-slate-900', 'text-slate-400');
+      });
+      if (e && e.currentTarget) {
+        e.currentTarget.classList.remove('bg-slate-900', 'text-slate-400');
+        e.currentTarget.classList.add('bg-slate-800', 'text-emerald-400', 'border-emerald-500/40');
+      }
+      renderCatalog();
+    }
+
+    function handleSearch(elem) {
+      searchQuery = elem.value || '';
+      renderCatalog();
+    }
+
+    function handleLinkClick(e) {
+      if (isEditingEnabled) {
+        e.preventDefault();
+      }
+    }
+
+    function openAdminModal() {
+      const modal = document.getElementById('adminModal');
+      modal.classList.remove('hidden');
+      setTimeout(() => modal.classList.remove('opacity-0'), 10);
+      document.getElementById('adminPasswordInput').focus();
+    }
+
+    function closeAdminModal() {
+      const modal = document.getElementById('adminModal');
+      modal.classList.add('opacity-0');
+      setTimeout(() => {
+        modal.classList.add('hidden');
+        document.getElementById('authErrorMsg').classList.add('hidden');
+        document.getElementById('adminPasswordInput').value = '';
+      }, 200);
+    }
+
+    function handleAdminAuth(e) {
+      e.preventDefault();
+      const pwd = document.getElementById('adminPasswordInput').value;
+      if (pwd === ADMIN_PASSWORD) {
+        isAdmin = true;
+        localStorage.setItem('saul_admin', 'true');
+        closeAdminModal();
+        applyAdminState();
+        renderCatalog();
+        showToast('Успешный вход в режим администратора');
+      } else {
+        document.getElementById('authErrorMsg').classList.remove('hidden');
+      }
+    }
+
+    function checkAdminSession() {
+      if (localStorage.getItem('saul_admin') === 'true') {
+        isAdmin = true;
+        applyAdminState();
+      }
+    }
+
+    function applyAdminState() {
+      const banner = document.getElementById('adminBanner');
+      const trigger = document.getElementById('adminLoginTrigger');
+      if (isAdmin) {
+        banner.classList.remove('hidden');
+        trigger.classList.add('hidden');
+      } else {
+        banner.classList.add('hidden');
+        trigger.classList.remove('hidden');
+      }
+    }
+
+    function logoutAdmin() {
+      isAdmin = false;
+      isEditingEnabled = false;
+      localStorage.removeItem('saul_admin');
+      toggleEditability(false);
+      applyAdminState();
+      renderCatalog();
+      showToast('Вы вышли из режима администратора');
+    }
+
+    function openProductEditModal(id) {
+      try {
+        const modal = document.getElementById('productEditModal');
+        const title = document.getElementById('modalProductTitle');
+        
+        if (id !== null && id !== undefined && id !== '') {
+          const item = products.find(p => p.id == id);
+          if (!item) return;
+          title.innerHTML = `<i class="fa-solid fa-pen-to-square text-emerald-400"></i><span>Редактировать деталь #${item.id}</span>`;
+          document.getElementById('editProductId').value = item.id;
+          document.getElementById('editProductImage').value = item.image;
+          document.getElementById('editProductName').value = item.name;
+          document.getElementById('editProductOem').value = item.oem;
+          document.getElementById('editProductPrice').value = item.price;
+          document.getElementById('editProductBrand').value = item.brand;
+          document.getElementById('editProductCategory').value = item.category;
+          document.getElementById('editProductDesc').value = item.desc;
+        } else {
+          title.innerHTML = `<i class="fa-solid fa-plus text-emerald-400"></i><span>Добавить новую деталь</span>`;
+          document.getElementById('editProductId').value = '';
+          document.getElementById('editProductImage').value = 'https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?auto=format&fit=crop&w=600&q=80';
+          document.getElementById('editProductName').value = '';
+          document.getElementById('editProductOem').value = '';
+          document.getElementById('editProductPrice').value = '';
+          document.getElementById('editProductBrand').value = 'Hyundai';
+          document.getElementById('editProductCategory').value = 'Двигатель';
+          document.getElementById('editProductDesc').value = '';
+        }
+
+        modal.classList.remove('hidden');
+        setTimeout(() => modal.classList.remove('opacity-0'), 10);
+      } catch (err) {
+        console.error("Modal error:", err);
+        showToast("Ошибка при открытии формы редактирования");
+      }
+    }
+
+    function closeProductEditModal() {
+      const modal = document.getElementById('productEditModal');
+      modal.classList.add('opacity-0');
+      setTimeout(() => modal.classList.add('hidden'), 200);
+    }
+
+    function saveProductChanges(e) {
+      e.preventDefault();
+      try {
+        const id = document.getElementById('editProductId').value;
+        const img = document.getElementById('editProductImage').value || 'https://placehold.co/400x300/11171d/10b981?text=Saul+Parts';
+        const name = document.getElementById('editProductName').value;
+        const oem = document.getElementById('editProductOem').value;
+        const price = parseFloat(document.getElementById('editProductPrice').value) || 0;
+        const brand = document.getElementById('editProductBrand').value;
+        const category = document.getElementById('editProductCategory').value;
+        const desc = document.getElementById('editProductDesc').value;
+
+        if (id) {
+          const item = products.find(p => p.id == id);
+          if (item) {
+            item.image = img;
+            item.name = name;
+            item.oem = oem;
+            item.price = price;
+            item.brand = brand;
+            item.category = category;
+            item.desc = desc;
+          }
+        } else {
+          const newProduct = {
+            id: Date.now(),
+            image: img,
+            name: name,
+            oem: oem,
+            price: price,
+            brand: brand,
+            category: category,
+            desc: desc
+          };
+          products.unshift(newProduct);
+        }
+
+        saveProductsData();
+        renderCatalog();
+        closeProductEditModal();
+        showToast('Запчасть успешно сохранена!');
+      } catch (err) {
+        console.error("Save error:", err);
+        showToast("Ошибка при сохранении данных");
+      }
+    }
+
+    function deleteProduct(id) {
+      if (confirm('Вы уверены, что хотите удалить эту деталь из каталога?')) {
+        products = products.filter(p => p.id != id);
+        saveProductsData();
+        renderCatalog();
+        showToast('Деталь удалена');
+      }
+    }
+
+    function toggleEditability(forceState) {
+      if (forceState !== undefined) {
+        isEditingEnabled = forceState;
+      } else {
+        isEditingEnabled = !isEditingEnabled;
+      }
+
+      const btn = document.getElementById('editTextBtn');
+      const editableElements = document.querySelectorAll('.editable-content');
+
+      if (isEditingEnabled) {
+        btn.classList.remove('bg-slate-800', 'text-emerald-400');
+        btn.classList.add('bg-amber-600', 'text-white');
+        btn.querySelector('span').innerText = 'Сохранить тексты';
+        
+        editableElements.forEach(el => {
+          el.setAttribute('contenteditable', 'true');
+        });
+        showToast('Кликните по любому тексту, чтобы изменить его');
+      } else {
+        btn.classList.remove('bg-amber-600', 'text-white');
+        btn.classList.add('bg-slate-800', 'text-emerald-400');
+        btn.querySelector('span').innerText = 'Правка текстов';
+
+        editableElements.forEach(el => {
+          el.removeAttribute('contenteditable');
+          const key = el.getAttribute('data-key');
+          if (key) {
+            try {
+              localStorage.setItem(`saul_content_${key}`, el.innerHTML);
+            } catch(e){}
+          }
+        });
+        showToast('Тексты сохранены!');
+      }
+    }
+
+    function loadSavedTexts() {
+      document.querySelectorAll('.editable-content').forEach(el => {
+        const key = el.getAttribute('data-key');
+        if (key) {
+          const saved = localStorage.getItem(`saul_content_${key}`);
+          if (saved) {
+            el.innerHTML = saved;
+          }
+        }
+      });
+    }
+
+    function resetToDefaults() {
+      if (confirm('Сбросить все товары и тексты сайта к исходным значениям?')) {
+        localStorage.clear();
+        products = [...defaultProducts];
+        location.reload();
+      }
+    }
+
+    function addToCart(id) {
+      const product = products.find(p => p.id == id);
+      if (!product) return;
+      const exist = cart.find(c => c.id == id);
+      if (exist) {
+        exist.qty += 1;
+      } else {
+        cart.push({ ...product, qty: 1 });
+      }
+      updateCartUI();
+      showToast(`Добавлено: ${product.name}`);
+    }
+
+    function updateCartUI() {
+      const badge = document.getElementById('cartBadge');
+      const list = document.getElementById('cartItemsList');
+      const sumEl = document.getElementById('cartTotalSum');
+
+      const totalQty = cart.reduce((a, b) => a + b.qty, 0);
+      badge.innerText = totalQty;
+
+      if (cart.length === 0) {
+        list.innerHTML = `<div class="text-center text-slate-500 py-8 text-xs">Ваша корзина пуста</div>`;
+        sumEl.innerText = '0 сом';
+        return;
+      }
+
+      let totalSum = 0;
+      list.innerHTML = cart.map(item => {
+        totalSum += item.price * item.qty;
+        return `
+          <div class="flex items-center justify-between bg-slate-950 p-3 rounded-xl border border-slate-800">
+            <div class="pr-2">
+              <h4 class="text-xs font-bold text-white">${item.name}</h4>
+              <p class="text-[10px] text-slate-400 mt-0.5">${item.price} сом x ${item.qty}</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <button onclick="changeQty('${item.id}', -1)" class="w-6 h-6 rounded bg-slate-800 text-slate-300 flex items-center justify-center font-bold text-xs hover:bg-slate-700">-</button>
+              <span class="text-xs text-white font-bold">${item.qty}</span>
+              <button onclick="changeQty('${item.id}', 1)" class="w-6 h-6 rounded bg-slate-800 text-slate-300 flex items-center justify-center font-bold text-xs hover:bg-slate-700">+</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      sumEl.innerText = `${totalSum} сом`;
+    }
+
+    function changeQty(id, delta) {
+      const item = cart.find(c => c.id == id);
+      if (!item) return;
+      item.qty += delta;
+      if (item.qty <= 0) {
+        cart = cart.filter(c => c.id != id);
+      }
+      updateCartUI();
+    }
+
+    function toggleCartModal() {
+      const modal = document.getElementById('cartModal');
+      if (modal.classList.contains('hidden')) {
+        modal.classList.remove('hidden');
+        setTimeout(() => modal.classList.remove('opacity-0'), 10);
+      } else {
+        modal.classList.add('opacity-0');
+        setTimeout(() => modal.classList.add('hidden'), 200);
+      }
+    }
+
+    function checkoutCart() {
+      if (cart.length === 0) {
+        showToast('Добавьте товары в корзину');
+        return;
+      }
+      const text = cart.map(i => `• ${i.name} (${i.oem}) - ${i.qty} шт`).join('%0A');
+      window.open(`https://wa.me/996555554447?text=Здравствуйте! Заказ:%0A${text}`, '_blank');
+    }
+
+    function handleVinSubmit(e) {
+      e.preventDefault();
+      showToast('Запрос успешно отправлен менеджерам!');
+      e.target.reset();
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toastMsg').innerText = msg;
+      toast.classList.remove('translate-y-20', 'opacity-0', 'pointer-events-none');
+      setTimeout(() => {
+        toast.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none');
+      }, 3000);
+    }
+  </script>
+</body>
+</html>
